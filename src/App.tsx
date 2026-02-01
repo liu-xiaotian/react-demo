@@ -1,82 +1,29 @@
 import { useImmer } from 'use-immer'
 
-interface Todo {
-  id: number
-  text: string
-  completed: boolean
-}
+export default function Counter() {
+  const [count, setCount] = useImmer(0)
+  const [isVisible, setIsVisible] = useImmer(true)
 
-export default function TodoList() {
-  const [todos, setTodos] = useImmer<Todo[]>([])
-
-  const addTodo = (text: string) => {
-    setTodos(draft => {
-      draft.push({
-        id: Date.now(),
-        text,
-        completed: false
-      })
-    })
-  }
-
-  const toggleTodo = (id: number) => {
-    setTodos(draft => {
-      const todo = draft.find(t => t.id === id)
-      if (todo) {
-        todo.completed = !todo.completed
-      }
-    })
-  }
-
-  const removeTodo = (id: number) => {
-    setTodos(draft => {
-      const index = draft.findIndex(t => t.id === id)
-      if (index > -1) {
-        draft.splice(index, 1)
-      }
-    })
-  }
-
-  const clearCompleted = () => {
-    setTodos(draft => {
-      return draft.filter(todo => !todo.completed)
-    })
-  }
+  const increment = () => setCount(count + 1)
+  const decrement = () => setCount(count - 1)
+  const reset = () => setCount(0)
+  const toggleVisibility = () => setIsVisible(!isVisible)
 
   return (
-    <div className="todo-list">
-      <h2>待办事项 ({todos.length})</h2>
-      
-      <div className="add-todo">
-        <input 
-          type="text" 
-          placeholder="添加新待办..."
-          onKeyPress={(e) => {
-            if (e.key === 'Enter' && e.currentTarget.value.trim()) {
-              addTodo(e.currentTarget.value.trim())
-              e.currentTarget.value = ''
-            }
-          }}
-        />
-      </div>
-
-      <ul>
-        {todos.map(todo => (
-          <li key={todo.id} className={todo.completed ? 'completed' : ''}>
-            <input
-              type="checkbox"
-              checked={todo.completed}
-              onChange={() => toggleTodo(todo.id)}
-            />
-            <span>{todo.text}</span>
-            <button onClick={() => removeTodo(todo.id)}>删除</button>
-          </li>
-        ))}
-      </ul>
-
-      {todos.some(t => t.completed) && (
-        <button onClick={clearCompleted}>清除已完成</button>
+    <div className="counter">
+      {isVisible && (
+        <>
+          <h2>计数器: {count}</h2>
+          <div className="controls">
+            <button onClick={decrement}>-</button>
+            <button onClick={increment}>+</button>
+            <button onClick={reset}>重置</button>
+          </div>
+        </>
       )}
+      <button onClick={toggleVisibility}>
+        {isVisible ? '隐藏' : '显示'}计数器
+      </button>
     </div>
   )
 }
