@@ -1,51 +1,82 @@
-import { useImmer } from 'use-immer';
+import { useImmer } from 'use-immer'
 
-interface User{
-  name:string
-  age:number
-  profile:{
-    avatar:string
-    bio:string
-    preferences:{
-      theme:'light'|'dark'
-      notifications:boolean
-    }
-  }
+interface Todo {
+  id: number
+  text: string
+  completed: boolean
 }
 
-export default function UserProfile(){
-  const [user, setUser] = useImmer<User>({
-    name:'xiao',
-    age:23,
-    profile:{
-      avatar:'avatar.jpg',
-      bio:'coder',
-      preferences:{
-        theme:'light',
-        notifications:true
+export default function TodoList() {
+  const [todos, setTodos] = useImmer<Todo[]>([])
+
+  const addTodo = (text: string) => {
+    setTodos(draft => {
+      draft.push({
+        id: Date.now(),
+        text,
+        completed: false
+      })
+    })
+  }
+
+  const toggleTodo = (id: number) => {
+    setTodos(draft => {
+      const todo = draft.find(t => t.id === id)
+      if (todo) {
+        todo.completed = !todo.completed
       }
-    }
-  })
-
-  const updateTheme =()=>{
-    setUser(draft=>{
-      draft.profile.preferences.theme='dark'
-    })
-  }
-  const updateBio = (newBio:string)=>{
-    setUser(draft=>{
-      draft.profile.bio = newBio
     })
   }
 
-  return(
-    <div className='user-profile'>
-      <h2>{user.name}</h2>
-      <p>年龄：{user.age}</p>
-      <p>个人简介：{user.profile.bio}</p>
-      <p>主题：{user.profile.preferences.theme}</p>
-      <button onClick={updateTheme}>切换主题</button>
-      <button onClick={()=>updateBio('热爱编程')}>更新简介</button>
+  const removeTodo = (id: number) => {
+    setTodos(draft => {
+      const index = draft.findIndex(t => t.id === id)
+      if (index > -1) {
+        draft.splice(index, 1)
+      }
+    })
+  }
+
+  const clearCompleted = () => {
+    setTodos(draft => {
+      return draft.filter(todo => !todo.completed)
+    })
+  }
+
+  return (
+    <div className="todo-list">
+      <h2>待办事项 ({todos.length})</h2>
+      
+      <div className="add-todo">
+        <input 
+          type="text" 
+          placeholder="添加新待办..."
+          onKeyPress={(e) => {
+            if (e.key === 'Enter' && e.currentTarget.value.trim()) {
+              addTodo(e.currentTarget.value.trim())
+              e.currentTarget.value = ''
+            }
+          }}
+        />
+      </div>
+
+      <ul>
+        {todos.map(todo => (
+          <li key={todo.id} className={todo.completed ? 'completed' : ''}>
+            <input
+              type="checkbox"
+              checked={todo.completed}
+              onChange={() => toggleTodo(todo.id)}
+            />
+            <span>{todo.text}</span>
+            <button onClick={() => removeTodo(todo.id)}>删除</button>
+          </li>
+        ))}
+      </ul>
+
+      {todos.some(t => t.completed) && (
+        <button onClick={clearCompleted}>清除已完成</button>
+      )}
     </div>
   )
 }
