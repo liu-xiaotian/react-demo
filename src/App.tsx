@@ -1,29 +1,18 @@
-import { useImmer } from 'use-immer'
+import { useHistory } from './hooks/useHistory';
+import { useStorage } from './hooks/useStorage';
 
-export default function Counter() {
-  const [count, setCount] = useImmer(0)
-  const [isVisible, setIsVisible] = useImmer(true)
-
-  const increment = () => setCount(count + 1)
-  const decrement = () => setCount(count - 1)
-  const reset = () => setCount(0)
-  const toggleVisibility = () => setIsVisible(!isVisible)
-
-  return (
-    <div className="counter">
-      {isVisible && (
-        <>
-          <h2>计数器: {count}</h2>
-          <div className="controls">
-            <button onClick={decrement}>-</button>
-            <button onClick={increment}>+</button>
-            <button onClick={reset}>重置</button>
-          </div>
-        </>
-      )}
-      <button onClick={toggleVisibility}>
-        {isVisible ? '隐藏' : '显示'}计数器
-      </button>
-    </div>
+const App = ()=>{
+  const [val, setVal] = useStorage('data', 1)
+  const [history, push, replace] = useHistory()
+  return(
+    <>
+    <h3>{val}</h3>
+    <button onClick={()=>setVal(val+1)}>设置val</button>
+    
+    <button onClick={()=>{push('/aaa')}}>跳转</button>
+    <button onClick={()=>{replace('/bbb')}}>替换</button>
+    </>
   )
 }
+
+export default App
