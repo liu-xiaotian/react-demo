@@ -1,4 +1,6 @@
 import Card from './components/Card';
+import Test from './components/Test';
+import Test2 from './components/Test2';
 function App(){
   const fn = (params:string)=>{
     console.log('子组件触发了 父组件的事件',params);
@@ -15,6 +17,9 @@ function App(){
       </Card>
       <Card callback={fn}></Card>
       <button onClick={window.onShow}>调用message</button>
+      <hr />
+      <Test></Test>
+      <Test2></Test2>
     </>
   )
 }
