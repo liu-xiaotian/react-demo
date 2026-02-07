@@ -3,7 +3,8 @@ import React from 'react';
 
 // 1. 第一种写法 interface 安装给 props
 interface props{
-  title:string
+  title?:string
+   children?: React.ReactNode //手动声明children
 }
 
 //2. React.FC function component
@@ -25,7 +26,7 @@ const Card:React.FC<props>=(props)=>{
                 <div>副标题</div>
             </header>
             <main>
-                内容区域
+                {props.children}
             </main>
             <footer>
                  <button>确认</button>

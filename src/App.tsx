@@ -2,7 +2,13 @@ import Card from './components/Card';
 function App(){
   return(
     <>
-      <Card title={'tt'}></Card>
+      <Card title={'tt'}>
+        <div>
+          <section>
+            <i>我是内容123</i>
+          </section>
+        </div>
+      </Card>
       <button onClick={window.onShow}>调用message</button>
     </>
   )
