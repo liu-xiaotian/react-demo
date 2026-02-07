@@ -5,6 +5,7 @@ import React from 'react';
 interface props{
   title?:string
    children?: React.ReactNode //手动声明children
+   callback: (params: string) => void
 }
 
 //2. React.FC function component
@@ -29,7 +30,7 @@ const Card:React.FC<props>=(props)=>{
                 {props.children}
             </main>
             <footer>
-                 <button>确认</button>
+                 <button onClick={()=>props.callback('确定123')}>确认</button>
                  <button>取消</button>
             </footer>
     </div>
