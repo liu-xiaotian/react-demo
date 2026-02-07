@@ -1,18 +1,30 @@
-import { useHistory } from './hooks/useHistory';
-import { useStorage } from './hooks/useStorage';
+import React, { useState } from 'react'
 
-const App = ()=>{
-  const [val, setVal] = useStorage('data', 1)
-  const [history, push, replace] = useHistory()
-  return(
-    <>
-    <h3>{val}</h3>
-    <button onClick={()=>setVal(val+1)}>设置val</button>
-    
-    <button onClick={()=>{push('/aaa')}}>跳转</button>
-    <button onClick={()=>{replace('/bbb')}}>替换</button>
-    </>
-  )
+const useCookie = (name:string, initValue:string = '')=>{
+  const getCookie = ()=>{
+    const match = document.cookie.match(new RegExp(`(^| )${name}=([^;]*)(;|$)`)) 
+    return match ? match[2] : initValue
+  }
+  const [cookie, setCookie] = useState(getCookie())
+
+  const updateCookies = (newValeu:string)=>{
+    document.cookie = `${name}=${newValeu}`
+    setCookie(newValeu)
+  }
+  const deleteCookie = () => {
+    document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:00 GMT`
+    setCookie("")
+  }
+  React.useDebugValue(cookie)
+  return [cookie, updateCookies, deleteCookie] as const
 }
 
-export default App
+const App: React.FC = () => {
+   const [cookie, updateCookies, deleteCookie] = useCookie('xxx', 'value')
+   return <>
+      <div>{cookie}</div>
+      <button onClick={()=>updateCookies('update-xxx')}>更新</button>
+      <button onClick={() => { deleteCookie() }}>删除cookie</button>
+   </>;
+};
+export default App;
